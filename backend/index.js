@@ -7,15 +7,13 @@ import express from 'express';
 import { connectDb } from './db/connectDb.js';
 
 const app = express();
+const PORT = process.env.PORT|| 5000;
 
-app.get("/", (req, res) => {
-    res.send("Auth");
-});
+app.use(express.json()); //Allows us to parse incoming requests with Json Playload;
 
 app.use("/api/auth", authRoutes)
 
-
-app.listen(3000, async () => {
+app.listen(PORT, async () => {
     await connectDb();
-    console.log("Server is running on port 3000..");
+    console.log("Server is running on port: ",PORT);
 });
