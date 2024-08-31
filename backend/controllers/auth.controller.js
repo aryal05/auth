@@ -8,12 +8,12 @@ export const signup = async (req,res)=>{
         if(!email || !password ||!name){
             throw new Error("All fields are required")
         }
-        const userAlreadyExists = await User.findOne({email});
+        const userAlreadyExists = await User.findOne({email}); 
         // console.log("useralreadyexists", userAlreadyExists)
         if(userAlreadyExists){
             throw new Error("User Already exists")
         }
-
+ 
         const hashedPassword = await bcryptjs.hash(password,10);
 
         const verificationToken =()=>{
