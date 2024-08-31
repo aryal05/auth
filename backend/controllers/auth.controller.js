@@ -1,6 +1,6 @@
 import {User} from '../models/user.model.js'
 import bcryptjs from 'bcryptjs'
-
+import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
 
 export const signup = async (req,res)=>{
     const {email,password,name}=req.body;
@@ -9,6 +9,7 @@ export const signup = async (req,res)=>{
             throw new Error("All fields are required")
         }
         const userAlreadyExists = await User.findOne({email});
+        // console.log("useralreadyexists", userAlreadyExists)
         if(userAlreadyExists){
             throw new Error("User Already exists")
         }
@@ -27,7 +28,7 @@ export const signup = async (req,res)=>{
             verificationTokenExpiresAt:Date.now() + 24*60*1000,
         })
         await user.save();
-
+ 
         //JWT
         generateTokenAndSetCookie(res,user._id)
         res.status(201).json({
