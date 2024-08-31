@@ -1,7 +1,7 @@
 import {User} from '../models/user.model.js'
 import bcryptjs from 'bcryptjs'
 import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
-import { sendVerificationEmail } from '../mailtrap/emails.js';
+import { sendVerificationEmail, sendWelcomeEmail } from '../mailtrap/emails.js';
 
 export const signup = async (req,res)=>{
     const {email,password,name}=req.body;
@@ -17,22 +17,24 @@ export const signup = async (req,res)=>{
  
         const hashedPassword = await bcryptjs.hash(password,10);
 
-        const verificationToken =()=>{
-            return Math.floor(100000 + Math.random()*900000).toString();
-        }
+        const verificationToken = () => {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        };
+
+        const token = verificationToken(); 
 
         const user = new User({
             email,
             password: hashedPassword,
             name,
-            verificationToken,
-            verificationTokenExpiresAt:Date.now() + 24*60*1000,
+            verificationToken:token,
+            verificationTokenExpiresAt:Date.now() + 24 * 60 * 1000,
         })
         await user.save();
  
         //JWT
         generateTokenAndSetCookie(res,user._id)
-        await sendVerificationEmail(user.email,verificationToken);
+        await sendVerificationEmail(user.email,token);
         res.status(201).json({
             sucess:true,
             message:"User created successfully",
@@ -61,8 +63,19 @@ try {
     if(!user){
         return res.status(401).json({sucess:false,message:"Invalid or Expired verification code"})
     }
+    user.isVerified =true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpiresAt = undefined;
+    await user.save();
+
+    await sendWelcomeEmail(user.email, user.name)
+      res.status(200).json({
+       sucess:true,
+       message:"Email verified"
+})
     
 } catch (error) {
+    console.log(error.message)
     
 }
 };
