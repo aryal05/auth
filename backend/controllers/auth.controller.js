@@ -50,6 +50,23 @@ export const signup = async (req,res)=>{
 
 };
 
+
+export const verifyEmail = async(req,res)=>{
+const{code}=req.body
+try {
+    const user = await User.findOne({
+        verificationToken:code,
+        verificationTokenExpiresAt:{$gt:Date.now()}
+    })
+    if(!user){
+        return res.status(401).json({sucess:false,message:"Invalid or Expired verification code"})
+    }
+    
+} catch (error) {
+    
+}
+};
+
 export const login = async (req,res)=>{
     res.send("login route")
 };
@@ -57,3 +74,4 @@ export const login = async (req,res)=>{
 export const logout = async (req,res)=>{
     res.send("logout route")
 }
+
