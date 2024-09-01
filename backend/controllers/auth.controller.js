@@ -2,7 +2,7 @@ import {User} from '../models/user.model.js'
 import bcryptjs from 'bcryptjs'
 import crypto from "crypto"
 import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
-import { sendVerificationEmail, sendWelcomeEmail } from '../mailtrap/emails.js';
+import { sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from '../mailtrap/emails.js';
 
 export const signup = async (req,res)=>{
     const {email,password,name}=req.body;
@@ -137,12 +137,48 @@ export const forgotPassword = async(req,res)=>{
         user.resetPasswordExpiresAt = resetTokenExpiresAt;
 
         await user.save();
-
+           
+        //send email
         await sendPasswordResetEmail (user.email, `http://localhost:5173/reset-password/${resetToken}`)
-
+        res.status(200).json({
+            sucess:true,
+            message:"Password Reset link sent"
+     })
 
     } catch (error) {
+        console.log("Error in Forget Password")
+        res.status(400).json({sucess:false, message:error.message})
         
     }
 }
 
+export const resetPassword = async(req,res)=>{
+    try {
+        const {token} = req.params;
+        const {password} = req.body;
+
+        const user = await User.findOne({
+            resetPasswordToken:token,
+            resetPasswordExpiresAt:{$gt:Date.now()},
+        });
+        if(!user){
+            return res.status(400).json({sucess:false, message:"Invalid or expired Token"})
+        }
+
+        // Update Password
+        const hashedPassword = await bcryptjs.hash(password,10);
+        user.password = hashedPassword;
+
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpiresAt = undefined;
+        await user.save();
+
+        await sendResetSuccessEmail(user.email);
+        res.status(200).json({sucess:true, message:"Password Reset Successful."})
+
+ 
+    } catch (error) {
+        console.log("Error in reset password", error)
+        res.status(400).json({sucess:false, message:error.message})
+    }
+}
