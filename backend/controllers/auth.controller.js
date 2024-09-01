@@ -1,6 +1,9 @@
 import {User} from '../models/user.model.js'
 import bcryptjs from 'bcryptjs'
 import crypto from "crypto"
+
+
+
 import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
 import { sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from '../mailtrap/emails.js';
 
@@ -180,5 +183,22 @@ export const resetPassword = async(req,res)=>{
     } catch (error) {
         console.log("Error in reset password", error)
         res.status(400).json({sucess:false, message:error.message})
+    }
+}
+
+export const checkAuth = async(req,res)=>{
+    try {
+        const user = await User.findOne(req.userId)
+        if(!user){
+            return res.status(400).json({sucess:false, message:"User not found"})
+        }
+        res.status(200).json({sucess:true,user:{
+            ...user._doc,
+            password: undefined,
+        }})
+    } catch (error) {
+        console.log("Error in CheckAuth", error)
+        res.status(400).json({success:false, message:error.message})
+        
     }
 }
