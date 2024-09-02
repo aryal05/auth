@@ -1,5 +1,8 @@
 import React from 'react'
 import FloatingShap from './components/FloatingShap'
+import SignUp from './pages/SignUp'
+import Login from './pages/Login'
+import {Routes,Route} from "react-router-dom"
 
 const App = () => {
   return (
@@ -17,7 +20,11 @@ const App = () => {
     color = "bg-green-500" size="w-32 h-32" top="50%" left="-10%" delay={2}
     />
 
-
+<Routes>
+  <Route path="/" element ={"Home"}/>
+  <Route path="/sign-up" element ={<SignUp/>}/>
+  <Route path="/login" element ={<Login/>}/>
+</Routes>
   </div>
   
   </>
