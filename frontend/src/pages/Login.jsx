@@ -5,8 +5,8 @@ import Input from '../components/Input';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const [email,setEmail] = useState("")
-  const [password,setPassword] = useState("")
+  // const [email,setEmail] = useState("")
+  // const [password,setPassword] = useState("")
     const handleSignUp =(e)=>{
         e.preventDefault();
 
@@ -43,8 +43,6 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           />
 
-
-          {/* Password Strength Meter */}
           {/* <motion.button className='mt-5 w-full py-3 px4 bg-gradient-to-r from-green-500 to-emerald-600 text-white
           font-bold rounded-lg hover:from-green-600 hover:to-emerald-700 transition duration-200' 
           whileHover={{scale:1.02}}
