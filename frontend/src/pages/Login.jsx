@@ -5,7 +5,7 @@ import Input from '../components/Input';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  // const [email,setEmail] = useState("")
+  const [email,setEmail] = useState("")
   // const [password,setPassword] = useState("")
     const handleSignUp =(e)=>{
         e.preventDefault();
