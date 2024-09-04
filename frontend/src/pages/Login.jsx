@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import {User, Mail,Lock} from 'lucide-react'
+import { Mail,Lock,Loader} from 'lucide-react'
 import {motion} from "framer-motion"
 import Input from '../components/Input';
+import { Link } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
 
 const Login = () => {
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
-    const handleSignUp =(e)=>{
+  const isLoading = false;
+    const handleLogin =(e)=>{
         e.preventDefault();
 
     }
@@ -23,10 +25,10 @@ const Login = () => {
     >
         <div className='p-8'>
             <h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500
-            text-transparent bg-clip-text'>Login Here</h2>
+            text-transparent bg-clip-text'>Welcome Back</h2>
 
             
-        <form onSubmit={handleSignUp}>
+        <form onSubmit={handleLogin}>
 
            <Input
           icon={Mail}
@@ -42,24 +44,30 @@ const Login = () => {
           value ={password} 
           onChange={(e) => setPassword(e.target.value)}
           />
+          <div className='flex items-center mb-6'>
+           <Link to ="/forgot-password" className='text-sm text-green-400 hover:underline'>Fogot Password?</Link>
+          </div>
 
           <motion.button className='mt-5 w-full py-3 px4 bg-gradient-to-r from-green-500 to-emerald-600 text-white
           font-bold rounded-lg hover:from-green-600 hover:to-emerald-700 transition duration-200' 
           whileHover={{scale:1.02}}
           whileTap={{scale:0.98}}
-          type ='submit'>
+          type ='submit'
+          disabled={isLoading}
+          >
             
-           Login
+           {isLoading? <Loader className='w-6 h-6 mx-auto animate-spin'/>:"Login"}
           </motion.button>
+          
         </form>
         </div>
-        {/* <div className='px-8 py-4 bg-gray-900 bg-opacity-50 flex justify-center' >
-          <p className='text-sm text-gray-400'>Already have an account?
+        <div className='px-8 py-4 bg-gray-900 bg-opacity-50 flex justify-center' >
+          <p className='text-sm text-gray-400'>Don't have an account?
 
-          <Link to="/login" className='text-green-400 hover:underline'>Login</Link>
+          <Link to="/sign-up" className='text-green-400 hover:underline'>Sign Up</Link>
           </p>
           
-        </div> */}
+        </div>
 
 
 
